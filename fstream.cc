@@ -10,9 +10,12 @@
 #include <unistd.h>
 #include <errno.h>
 #include <sys/stat.h>
-#include <sys/mman.h>
 #include <sys/ioctl.h>
 #include "config.h"
+
+#ifdef HAVE_SYS_MMAN_H
+#include <sys/mman.h>
+#endif
 
 namespace ustl {
 
@@ -225,6 +228,7 @@ int fstream::fcntl (const char* rname, int request, long argument)
     return (rv);
 }
 
+#ifdef HAVE_SYS_MMAN_H
 /// Memory-maps the file and returns a link to it.
 memlink fstream::mmap (off_t n, off_t offset)
 {
@@ -248,6 +252,7 @@ void fstream::msync (memlink& l)
     if (::msync (l.data(), l.size(), MS_ASYNC | MS_INVALIDATE))
 	set_and_throw (failbit, "msync");
 }
+#endif
 
 void fstream::set_nonblock (bool v)
 {
