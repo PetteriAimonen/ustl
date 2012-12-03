@@ -28,6 +28,9 @@
 #if HAVE_SYS_TYPES_H
     #include <sys/types.h>
 #endif
+#if HAVE_UNISTD_H
+    #include <unistd.h>         // For ssize_t
+#endif
 #ifndef SIZE_MAX
     #define SIZE_MAX		UINT_MAX
 #endif
