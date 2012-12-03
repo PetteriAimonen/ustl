@@ -71,6 +71,36 @@
     #endif
 #endif
 
+// If there is no RTTI support (on an embedded system), C++ typeid keyword is
+// not supported. We hide this by using a macro instead of using typeid
+// keyword directly.
+#ifdef __GXX_RTTI
+    #define USTL_TYPENAME(_t_) typeid(_t_).name()
+#else
+    #define USTL_TYPENAME(_t_) "unknown type (RTTI disabled)"
+#endif
+
+// If there is no exception support (on an embedded system), C++ keywords
+// try, catch and throw are not supported. To compile uSTL without
+// exception support we use macros USLT_TRY, USLT_CATCH_ALL and USLT_THROW
+// instead of the real keywords. To handle exceptions in debug builds we define 
+// a "lightweight" exception handler. This handler is simply a function that 
+// prints exception information do diagnostic channel.
+#ifdef __EXCEPTIONS
+    #define USTL_TRY try
+    #define USTL_CATCH_ALL catch (...) {}
+    #define USTL_THROW(_exception_) throw (_exception_)
+#else
+    namespace ustl
+    {
+        class exception;
+        extern void exception_handler(const exception& ex);
+    }
+    #define USTL_TRY
+    #define USTL_CATCH_ALL
+    #define USTL_THROW(_exception_) ustl::exception_handler(_exception_)
+#endif
+
 // Define to empty if 'const' does not conform to ANSI C.
 #undef const
 // Define as '__inline' if that is what the C compiler calls it

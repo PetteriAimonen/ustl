@@ -7,6 +7,7 @@
 #include "ofstream.h"
 #include "strmsize.h"
 #include "ualgo.h"
+#include "config.h"
 
 namespace ustl {
 
@@ -18,7 +19,7 @@ namespace ustl {
 void cmemlink::link (const void* p, size_type n)
 {
     if (!p && n)
-	throw bad_alloc (n);
+	USTL_THROW(bad_alloc (n));
     unlink();
     relink (p, n);
 }

@@ -10,6 +10,7 @@
 #include "uexception.h"
 #include "utf8.h"
 #include "uios.h"
+#include "config.h"
 #if WANT_STREAM_BOUNDS_CHECKING
     #include "typeinfo.h"
 #endif
@@ -181,7 +182,7 @@ inline void ostream::seek (uoff_t newPos)
 {
 #if WANT_STREAM_BOUNDS_CHECKING
     if (newPos > size())
-	throw stream_bounds_exception ("seekp", "byte", pos(), newPos - pos(), size());
+	USTL_THROW(stream_bounds_exception ("seekp", "byte", pos(), newPos - pos(), size()));
 #else
     assert (newPos <= size());
 #endif
@@ -254,7 +255,7 @@ inline void ostream::iwrite (const T& v)
 {
     assert (aligned (stream_align_of (v)));
 #if WANT_STREAM_BOUNDS_CHECKING
-    if (!verify_remaining ("write", typeid(v).name(), sizeof(T)))
+    if (!verify_remaining ("write", USTL_TYPENAME(v), sizeof(T)))
 	return;
 #else
     assert (remaining() >= sizeof(T));

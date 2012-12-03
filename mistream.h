@@ -11,6 +11,7 @@
 #include "strmsize.h"
 #include "utf8.h"
 #include "uios.h"
+#include "config.h"
 #if WANT_STREAM_BOUNDS_CHECKING
     #include "typeinfo.h"
 #endif
@@ -204,7 +205,7 @@ inline void istream::seek (uoff_t newPos)
 {
 #if WANT_STREAM_BOUNDS_CHECKING
     if (newPos > size())
-	throw stream_bounds_exception ("seekg", "byte", pos(), newPos - pos(), size());
+	USTL_THROW(stream_bounds_exception ("seekg", "byte", pos(), newPos - pos(), size()));
 #else
     assert (newPos <= size());
 #endif
@@ -258,7 +259,7 @@ inline void istream::iread (T& v)
 {
     assert (aligned (stream_align_of (v)));
 #if WANT_STREAM_BOUNDS_CHECKING
-    if (!verify_remaining ("read", typeid(v).name(), sizeof(T)))
+    if (!verify_remaining ("read", USTL_TYPENAME(v), sizeof(T)))
 	return;
 #else
     assert (remaining() >= sizeof(T));
